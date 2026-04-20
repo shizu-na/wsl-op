@@ -1,5 +1,6 @@
 # wsl-op: Open files/URLs with a spinner animation
 op() {
+    trap 'tput cnorm; return' INT TERM
     (explorer.exe "${@:-.}" > /dev/null 2>&1 &)
     local spinner=('⢿' '⣻' '⣽' '⣾' '⣷' '⣯' '⣟' '⡿')
     tput civis
@@ -10,4 +11,5 @@ op() {
     done
     echo -e "\b Done!"
     tput cnorm
+    trap - INT TERM
 }
