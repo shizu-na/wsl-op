@@ -1,15 +1,14 @@
 # wsl-op: Open files/URLs with a spinner animation
 op() {
-    trap 'tput cnorm; return' INT TERM
+    trap 'tput cnorm; echo; return' INT TERM
     (explorer.exe "${@:-.}" > /dev/null 2>&1 &)
     local spinner=('⢿' '⣻' '⣽' '⣾' '⣷' '⣯' '⣟' '⡿')
     tput civis
-    echo -ne "Now Loading...  "
     for i in {0..19}; do
-        echo -ne "\b${spinner[i % 8]}"
+        printf "\rNow Loading... %s" "${spinner[i % 8]}"
         sleep 0.1
     done
-    echo -e "\b Done!"
+    printf "\rNow Loading Done!\n"
     tput cnorm
     trap - INT TERM
 }
