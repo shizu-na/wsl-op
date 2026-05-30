@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# wsl-op: Open files/URLs with a spinner animation
+
+command -v explorer.exe >/dev/null 2>&1 || {
+  printf 'wsl-op: explorer.exe が見つかりません。WSL 上で実行してください。\n' >&2
+  exit 1
+}
+
+spinner=('⢿' '⣻' '⣽' '⣾' '⣷' '⣯' '⣟' '⡿')
+
+cleanup() {
+  command -v tput >/dev/null 2>&1 && tput cnorm
+}
+
+trap 'cleanup; printf "\n"; exit 130' INT TERM
+
+command -v tput >/dev/null 2>&1 && tput civis
+
+explorer.exe "${@:-.}" >/dev/null 2>&1 &
+
+for i in {0..19}; do
+  printf '\rNow Loading... %s' "${spinner[i % 8]}"
+  sleep 0.1
+done
+
+printf '\rNow Loading Done!\n'
+cleanup
+trap - INT TERM
